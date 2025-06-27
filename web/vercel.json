@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci",
+  "framework": "nextjs",
   "builds": [
     {
       "src": "package.json",
@@ -11,7 +14,8 @@
     "NEXTAUTH_SECRET": "@nextauth-secret",
     "NEXTAUTH_URL": "@nextauth-url",
     "STRIPE_SECRET_KEY": "@stripe-secret-key",
-    "STRIPE_PUBLISHABLE_KEY": "@stripe-publishable-key"
+    "STRIPE_PUBLISHABLE_KEY": "@stripe-publishable-key",
+    "NODE_ENV": "production"
   },
   "functions": {
     "app/api/**/*.ts": {
@@ -36,5 +40,6 @@
         }
       ]
     }
-  ]
+  ],
+  "regions": ["iad1"]
 } 
