@@ -1,7 +1,7 @@
 {
   "name": "luxury-ecommerce-monorepo",
   "version": "1.0.0",
-  "description": "Luxury E-commerce Platform",
+  "description": "Luxury E-commerce Platform - Updated for Vercel deployment",
   "scripts": {
     "build": "cd web && npm ci && npm run build",
     "install": "cd web && npm ci",
