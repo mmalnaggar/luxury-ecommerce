@@ -1,60 +1,96 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Product } from '@prisma/client';
+import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { toast } from "sonner";
+import { 
+  HeartIcon, 
+  TrashIcon, 
+  ShoppingCartIcon,
+  StarIcon
+} from '@heroicons/react/24/outline'
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  images: string[];
+  category: string;
+  currency: string;
+  imageUrl: string | null;
+  brand: {
+    id: string;
+    name: string;
+    logoUrl: string | null;
+  };
+  averageRating: number;
+  reviewCount: number;
+}
 
 interface WishlistItem {
   id: string;
   product: Product;
-  addedAt: string;
+  userId: string;
+  createdAt: string;
 }
 
 export default function WishlistPage() {
+  const { data: session } = useSession();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [removingItem, setRemovingItem] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchWishlist = async () => {
-      try {
-        const response = await fetch('/api/wishlist');
-        if (!response.ok) {
-          throw new Error('Failed to fetch wishlist');
-        }
+    if (session?.user) {
+      fetchWishlist();
+    }
+  }, [session]);
+
+  const fetchWishlist = async () => {
+    try {
+      const response = await fetch("/api/wishlist");
+      if (response.ok) {
         const data = await response.json();
-        setWishlistItems(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
+        setWishlistItems(data.items);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching wishlist:", error);
+      toast.error("Failed to load wishlist");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchWishlist();
-  }, []);
-
-  const removeFromWishlist = async (productId: string) => {
+  const handleRemoveFromWishlist = async (productId: string) => {
+    setRemovingItem(productId);
     try {
       const response = await fetch(`/api/wishlist/${productId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to remove from wishlist');
+      if (response.ok) {
+        setWishlistItems((prev) =>
+          prev.filter((item) => item.product.id !== productId)
+        );
+        toast.success("Removed from wishlist");
       }
-      
-      setWishlistItems(prev => prev.filter(item => item.product.id !== productId));
-    } catch (err) {
-      console.error('Error removing from wishlist:', err);
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
+      toast.error("Failed to remove from wishlist");
+    } finally {
+      setRemovingItem(null);
     }
   };
 
   const addToCart = async (productId: string) => {
     try {
-      const response = await fetch('/api/cart/add', {
-        method: 'POST',
+      const response = await fetch("/api/cart", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           productId,
@@ -62,76 +98,151 @@ export default function WishlistPage() {
         }),
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to add to cart');
+      if (response.ok) {
+        toast.success("Product added to cart");
       }
-      
-      // Optionally show success message
-      console.log('Added to cart successfully');
-    } catch (err) {
-      console.error('Error adding to cart:', err);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add to cart");
     }
   };
 
-  if (loading) {
+  if (!session?.user) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading wishlist...</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Please sign in to view your wishlist</h1>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
-          <p className="text-gray-600">{error}</p>
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4">
+          <h1 className="text-2xl font-bold mb-4">My Wishlist</h1>
+          <div className="animate-pulse">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="bg-gray-100 rounded-lg h-64 w-full"
+                ></div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">My Wishlist</h1>
-        
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">My Wishlist</h1>
+          <p className="text-gray-600 mt-2">
+            {wishlistItems.length} {wishlistItems.length === 1 ? 'item' : 'items'} in your wishlist
+          </p>
+        </div>
+
         {wishlistItems.length === 0 ? (
           <div className="text-center py-12">
-            <h2 className="text-xl font-semibold text-gray-600 mb-4">Your wishlist is empty</h2>
-            <p className="text-gray-500">Start adding products to your wishlist!</p>
+            <HeartIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h2 className="text-xl font-medium text-gray-900 mb-2">Your wishlist is empty</h2>
+            <p className="text-gray-600 mb-6">
+              Start adding products to your wishlist to save them for later.
+            </p>
+            <Link 
+              href="/products"
+              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Browse Products
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {wishlistItems.map((item) => (
-              <div key={item.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                <div className="p-4">
-                  <div className="flex justify-between items-start mb-3">
-                    <h2 className="text-lg font-semibold text-gray-900">{item.product.name}</h2>
+              <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="aspect-square bg-gray-200 relative">
+                  {item.product.imageUrl ? (
+                    <Image
+                      src={item.product.imageUrl}
+                      alt={item.product.name}
+                      width={300}
+                      height={300}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="text-gray-400">No image</span>
+                    </div>
+                  )}
+                  
+                  {item.product.brand.logoUrl && (
+                    <div className="absolute top-2 left-2">
+                      <Image
+                        src={item.product.brand.logoUrl}
+                        alt={item.product.brand.name}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 rounded-full bg-white p-1"
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="absolute top-2 right-2 flex space-x-1">
                     <button
-                      onClick={() => removeFromWishlist(item.product.id)}
-                      className="text-red-500 hover:text-red-700"
+                      onClick={() => handleRemoveFromWishlist(item.product.id)}
+                      disabled={removingItem === item.product.id}
+                      className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 disabled:bg-gray-400 transition-colors"
+                      title="Remove from wishlist"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
+                      <TrashIcon className="h-4 w-4" />
                     </button>
                   </div>
-                  <p className="text-gray-600 text-sm mb-3">{item.product.description}</p>
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-lg font-bold text-blue-600">${item.product.price}</span>
-                    <span className="text-sm text-gray-500">{item.product.brand?.name || 'Unknown Brand'}</span>
+                </div>
+
+                <div className="p-4">
+                  <div className="mb-2">
+                    <h3 className="font-medium text-gray-900 line-clamp-2">
+                      {item.product.name}
+                    </h3>
+                    <p className="text-sm text-gray-500">{item.product.brand.name}</p>
                   </div>
-                  <button
-                    onClick={() => addToCart(item.product.id)}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200"
-                  >
-                    Add to Cart
-                  </button>
+
+                  <div className="flex items-center mb-2">
+                    <div className="flex items-center">
+                      {[...Array(5)].map((_, i) => (
+                        <StarIcon
+                          key={i}
+                          className={`h-4 w-4 ${
+                            i < Math.floor(item.product.averageRating)
+                              ? 'text-yellow-400'
+                              : 'text-gray-300'
+                          }`}
+                          fill={i < Math.floor(item.product.averageRating) ? 'currentColor' : 'none'}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-sm text-gray-500 ml-1">
+                      ({item.product.reviewCount})
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-lg font-bold text-gray-900">
+                      ${item.product.price.toFixed(2)}
+                    </span>
+                    <button
+                      onClick={() => addToCart(item.product.id)}
+                      className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                    >
+                      <ShoppingCartIcon className="w-4 h-4 mr-1" />
+                      Add to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
