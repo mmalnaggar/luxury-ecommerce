@@ -1,11 +1,14 @@
 {
+  "name": "luxury-ecommerce-monorepo",
+  "version": "1.0.0",
+  "description": "Luxury E-commerce Platform",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
-  }
+    "build": "cd web && npm ci && npm run build",
+    "install": "cd web && npm ci",
+    "dev": "cd web && npm run dev",
+    "start": "cd web && npm start"
+  },
+  "workspaces": [
+    "web"
+  ]
 } 
