@@ -1,0 +1,22 @@
+# Payment Gateway Environment Variables
+# Add these to your .env.local file
+
+# Stripe Configuration
+STRIPE_SECRET_KEY="sk_test_..." # Your Stripe secret key
+STRIPE_PUBLISHABLE_KEY="pk_test_..." # Your Stripe publishable key
+STRIPE_WEBHOOK_SECRET="whsec_..." # Stripe webhook endpoint secret
+
+# Paymob Configuration (for Egyptian market)
+PAYMOB_API_KEY="your-paymob-api-key" # Your Paymob API key
+PAYMOB_INTEGRATION_ID="your-paymob-integration-id" # Integration ID for iframes
+
+# Fawry Configuration (Egyptian payment service)
+FAWRY_MERCHANT_CODE="your-fawry-merchant-code" # Fawry merchant identifier
+FAWRY_SECURITY_KEY="your-fawry-security-key" # Fawry security key for authentication
+
+# Notes:
+# - For development, use test keys from each payment provider
+# - For production, ensure you use live keys and configure webhooks properly
+# - Stripe supports EGP currency for Egyptian transactions
+# - Paymob is recommended for local Egyptian payments (cards, wallets, etc.)
+# - Fawry allows cash payments at physical locations across Egypt 

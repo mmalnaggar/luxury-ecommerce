@@ -1,0 +1,225 @@
+{
+  "name": "Customer Service Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "customer-support",
+        "options": {}
+      },
+      "id": "c0c53dd8-42dd-48d5-9cb6-b3936792fb8b",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"channel\"]}}",
+              "operation": "equals",
+              "value2": "chat"
+            }
+          ]
+        }
+      },
+      "id": "a8b0df5c-3aa8-4c9f-8151-5ab1960849dc",
+      "name": "Chat Request?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatInput": "={{$json[\"query\"]}}",
+        "options": {
+          "systemMessage": "You are a helpful customer service assistant."
+        }
+      },
+      "id": "57dbee71-5588-4b9f-8f3f-4393cd5c4a01",
+      "name": "Chatbot Agent",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        650,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "audioText": "={{$json[\"query\"]}}",
+        "options": {
+          "voice": "alloy"
+        }
+      },
+      "id": "f2d5586c-1b68-42a7-b1f9-f65f762bbd4c",
+      "name": "Voice Agent",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        650,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json[\"callbackUrl\"]}}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "response",
+              "value": "={{$json[\"text\"]}}"
+            },
+            {
+              "name": "sessionId",
+              "value": "={{$json[\"sessionId\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "92f46c5b-1d17-4c1e-bd2e-c45af121b8da",
+      "name": "Send Chat Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        850,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json[\"callbackUrl\"]}}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "audioUrl",
+              "value": "={{$json[\"audioUrl\"]}}"
+            },
+            {
+              "name": "sessionId",
+              "value": "={{$json[\"sessionId\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7e6ffaa7-37cb-42dc-a55b-542b21bde252",
+      "name": "Send Voice Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        850,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Log customer interaction\nconst customerData = {\n  sessionId: $input.item.json.sessionId,\n  query: $input.item.json.query,\n  channel: $input.item.json.channel,\n  timestamp: new Date().toISOString(),\n  responseType: $input.item.json.channel === 'chat' ? 'text' : 'audio'\n};\n\n// Here you would normally store this in a database\nconsole.log('Customer interaction:', JSON.stringify(customerData, null, 2));\n\nreturn $input.item;"
+      },
+      "id": "6437c5e9-3d48-49d9-af3c-0e3ac35c870c",
+      "name": "Log Interaction",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Chat Request?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Request?": {
+      "main": [
+        [
+          {
+            "node": "Chatbot Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Voice Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chatbot Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Chat Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Voice Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Chat Response": {
+      "main": [
+        [
+          {
+            "node": "Log Interaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Voice Response": {
+      "main": [
+        [
+          {
+            "node": "Log Interaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "96b0e59f-9c9b-4e5a-b49e-205f4033711f",
+  "id": "1",
+  "meta": {
+    "instanceId": "customer-service-automation"
+  },
+  "tags": []
+} 

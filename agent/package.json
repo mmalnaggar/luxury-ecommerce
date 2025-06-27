@@ -1,0 +1,17 @@
+{
+  "name": "agent",
+  "version": "1.0.0",
+  "description": "n8n workflow for automated customer service with chatbot and voice agent",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "n8n start"
+  },
+  "keywords": ["n8n", "automation", "customer-service", "chatbot", "voice-agent"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "n8n": "^1.0.0"
+  }
+}
