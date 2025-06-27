@@ -1,19 +1,7 @@
-'use client'
-
-import { useSession } from 'next-auth/react'
+import React from 'react'
 import Link from 'next/link'
 
 export default function Home() {
-  const { data: session, status } = useSession()
-
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Main Content */}
@@ -27,28 +15,19 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Authentication Status */}
+        {/* Status */}
         <div className="mt-12 bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">
-            Authentication Status
+            Platform Status
           </h3>
-          
-          {session ? (
-            <div className="space-y-2">
-              <p className="text-green-600">✓ You are signed in</p>
-              <p><strong>Name:</strong> {session.user?.name}</p>
-              <p><strong>Email:</strong> {session.user?.email}</p>
-              <p><strong>Role:</strong> {(session.user as { role?: string })?.role}</p>
-              <p><strong>User ID:</strong> {(session.user as { id?: string })?.id}</p>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <p className="text-yellow-600">! You are not signed in</p>
-              <p className="text-sm text-gray-600">
-                You can still browse products and use guest checkout
-              </p>
-            </div>
-          )}
+          <div className="space-y-2">
+            <p className="text-green-600">✅ Next.js application is running</p>
+            <p className="text-green-600">✅ Vercel deployment successful</p>
+            <p className="text-yellow-600">⚠️ Database features temporarily disabled</p>
+            <p className="text-sm text-gray-600">
+              Authentication and product features will be available once database is connected
+            </p>
+          </div>
         </div>
 
         {/* Feature Links */}
@@ -70,56 +49,46 @@ export default function Home() {
 
           <div className="bg-white rounded-lg shadow p-6">
             <h4 className="text-lg font-medium text-gray-900 mb-2">
-              Brand Dashboard
+              Simple Test Page
             </h4>
             <p className="text-gray-600 text-sm mb-4">
-              Manage your brand and products {!session ? '(requires brand account)' : ''}
+              Test basic Next.js routing functionality
             </p>
             <Link
-              href="/dashboard"
+              href="/simple"
               className="text-indigo-600 hover:text-indigo-500 text-sm font-medium"
             >
-              Go to Dashboard →
+              View Simple Page →
             </Link>
           </div>
 
           <div className="bg-white rounded-lg shadow p-6">
             <h4 className="text-lg font-medium text-gray-900 mb-2">
-              Shopping Cart
+              Minimal Test Page
             </h4>
             <p className="text-gray-600 text-sm mb-4">
-              View your cart and proceed to checkout
+              Test minimal React component
             </p>
             <Link
-              href="/cart"
+              href="/minimal"
               className="text-indigo-600 hover:text-indigo-500 text-sm font-medium"
             >
-              View Cart →
+              View Minimal Page →
             </Link>
           </div>
         </div>
 
-        {/* Test Accounts Info */}
+        {/* Next Steps */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
           <h3 className="text-lg font-medium text-blue-900 mb-4">
-            Test Accounts
+            Next Steps
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div>
-              <p className="font-medium text-blue-900">Brand Owner</p>
-              <p className="text-blue-700">Email: brand@example.com</p>
-              <p className="text-blue-700">Password: brand123</p>
-            </div>
-            <div>
-              <p className="font-medium text-blue-900">Shopper</p>
-              <p className="text-blue-700">Email: shopper@example.com</p>
-              <p className="text-blue-700">Password: shopper123</p>
-            </div>
-            <div>
-              <p className="font-medium text-blue-900">Admin</p>
-              <p className="text-blue-700">Email: admin@example.com</p>
-              <p className="text-blue-700">Password: admin123</p>
-            </div>
+          <div className="space-y-2 text-sm">
+            <p>1. ✅ <strong>Deploy Next.js app</strong> - Completed!</p>
+            <p>2. 🔄 <strong>Set up database</strong> - In progress</p>
+            <p>3. 🔄 <strong>Enable authentication</strong> - Pending database</p>
+            <p>4. 🔄 <strong>Add product catalog</strong> - Pending database</p>
+            <p>5. 🔄 <strong>Configure payments</strong> - Pending authentication</p>
           </div>
         </div>
       </main>
