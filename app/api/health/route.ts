@@ -1,7 +1,15 @@
+import { NextResponse } from 'next/server'
+
 export async function GET() {
-  return Response.json({
+  return NextResponse.json({
     status: 'ok',
+    message: 'Egyptian E-commerce Platform API is running',
     timestamp: new Date().toISOString(),
-    message: 'API is working'
+    version: '1.0.0',
+    features: {
+      database: 'disabled',
+      authentication: 'disabled',
+      payments: 'disabled'
+    }
   })
 } 

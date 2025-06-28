@@ -1,16 +1,16 @@
 'use client'
 
-import { SessionProvider } from 'next-auth/react'
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 
 interface ProvidersProps {
   children: ReactNode
 }
 
 export function Providers({ children }: ProvidersProps) {
+  // Temporarily disabled - authentication not available without database
   return (
-    <SessionProvider>
+    <div>
       {children}
-    </SessionProvider>
+    </div>
   )
 } 
