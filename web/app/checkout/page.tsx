@@ -268,6 +268,7 @@ export default function CheckoutPage() {
   const [cart, setCart] = useState<Cart | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   useEffect(() => {
     fetchCart()
@@ -279,7 +280,7 @@ export default function CheckoutPage() {
       const response = await fetch('/api/cart')
       
       if (response.status === 401) {
-        window.location.href = '/auth/signin'
+        router.push('/auth/signin')
         return
       }
       
