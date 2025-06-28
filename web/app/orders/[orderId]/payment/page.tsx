@@ -12,7 +12,7 @@ import {
 } from "@stripe/react-stripe-js";
 
 interface PaymentPageProps {
-  params: Promise<{ orderId: string }>;
+  params: { orderId: string };
 }
 
 interface Order {
@@ -85,18 +85,10 @@ function CheckoutForm({ orderId }: { orderId: string }) {
 }
 
 export default function PaymentPage({ params }: PaymentPageProps) {
-  const [orderId, setOrderId] = useState<string>("");
+  const [orderId, setOrderId] = useState<string>(params.orderId);
   const [order, setOrder] = useState<Order | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const getOrderId = async () => {
-      const { orderId } = await params;
-      setOrderId(orderId);
-    };
-    getOrderId();
-  }, [params]);
 
   useEffect(() => {
     async function fetchOrderAndCreateIntent() {

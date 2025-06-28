@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from './providers'
+import Header from './components/Header'
 
 export const metadata: Metadata = {
   title: "Egyptian E-commerce Platform",
@@ -17,6 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <Providers>
+          <Header />
           {children}
         </Providers>
       </body>

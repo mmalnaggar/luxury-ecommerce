@@ -5,23 +5,15 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface ARAssetsPageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 export default function ARAssetsPage({ params }: ARAssetsPageProps) {
-  const [productId, setProductId] = useState<string>("");
+  const [productId, setProductId] = useState<string>(params.id);
   const [arAssets, setArAssets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    const getProductId = async () => {
-      const { id } = await params;
-      setProductId(id);
-    };
-    getProductId();
-  }, [params]);
 
   useEffect(() => {
     if (productId) {

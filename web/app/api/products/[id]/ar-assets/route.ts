@@ -7,10 +7,10 @@ const prisma = new PrismaClient()
 // Handler for GET requests - Fetch AR assets for a product
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params
+    const { id } = params
     const session = await auth()
     
     // Check if product exists
@@ -41,10 +41,10 @@ export async function GET(
 // Handler for POST requests - Upload a new AR asset for a product
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params
+    const { id } = params
     const session = await auth()
     
     // Check authentication
@@ -135,10 +135,10 @@ export async function POST(
 // Handler for DELETE requests - Remove an AR asset
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params
+    const { id } = params
     const session = await auth()
     
     // Check authentication

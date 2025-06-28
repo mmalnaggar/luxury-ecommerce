@@ -33,7 +33,7 @@ interface PaymentMethod {
 }
 
 interface CheckoutPageProps {
-  params: Promise<{ orderId: string }>
+  params: { orderId: string }
 }
 
 export default function CheckoutPage({ params }: CheckoutPageProps) {
@@ -42,18 +42,17 @@ export default function CheckoutPage({ params }: CheckoutPageProps) {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null)
   const [loading, setLoading] = useState(true)
   const [paymentProcessing, setPaymentProcessing] = useState(false)
-  const [orderId, setOrderId] = useState<string>('')
+  const [orderId, setOrderId] = useState<string>(params.orderId)
 
   const { data: session } = useSession()
   const router = useRouter()
 
   useEffect(() => {
-    const getOrderId = async () => {
-      const { orderId: id } = await params
-      setOrderId(id)
+    if (orderId) {
+      fetchOrder()
+      fetchPaymentMethods()
     }
-    getOrderId()
-  }, [params])
+  }, [orderId])
 
   const fetchOrder = useCallback(async () => {
     if (!orderId) return
@@ -84,13 +83,6 @@ export default function CheckoutPage({ params }: CheckoutPageProps) {
       console.error('Error fetching payment methods:', error)
     }
   }, [])
-
-  useEffect(() => {
-    if (orderId) {
-      fetchOrder()
-      fetchPaymentMethods()
-    }
-  }, [orderId, fetchOrder, fetchPaymentMethods])
 
   const handlePayment = async () => {
     if (!selectedPaymentMethod || !order) return
