@@ -6,8 +6,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  trailingSlash: false,
-  reactStrictMode: true,
 }
 
 module.exports = nextConfig 

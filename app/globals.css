@@ -1,16 +1,7 @@
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
-
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-  
-  /* Theme variables */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,10 +9,6 @@
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
-    
-    /* Update theme variables for dark mode */
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
   }
 }
 
@@ -34,99 +21,210 @@ body {
     )
     rgb(var(--background-start-rgb));
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-/* RTL Support */
-html[dir="rtl"] {
-  direction: rtl;
+/* Basic utility classes */
+.min-h-screen {
+  min-height: 100vh;
 }
 
-html[dir="ltr"] {
-  direction: ltr;
+.flex {
+  display: flex;
 }
 
-/* Arabic Font Support */
-html[lang="ar"] {
-  font-family: 'Noto Sans Arabic', 'Arial', sans-serif;
+.items-center {
+  align-items: center;
 }
 
-html[lang="en"] {
-  font-family: 'Inter', 'system-ui', sans-serif;
+.justify-center {
+  justify-content: center;
 }
 
-/* RTL Tailwind utilities adjustments */
-.rtl {
-  direction: rtl;
+.text-center {
+  text-align: center;
 }
 
-.ltr {
-  direction: ltr;
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
-/* Custom RTL spacing utilities */
-.rtl .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-x-reverse: 1;
+.font-bold {
+  font-weight: 700;
 }
 
-.rtl .divide-x-reverse > :not([hidden]) ~ :not([hidden]) {
-  --tw-divide-x-reverse: 1;
+.text-gray-900 {
+  color: rgb(17 24 39);
 }
 
-/* RTL-aware margin utilities */
-.rtl .mr-auto {
-  margin-right: auto;
-  margin-left: unset;
+.text-gray-600 {
+  color: rgb(75 85 99);
 }
 
-.rtl .ml-auto {
+.text-gray-500 {
+  color: rgb(107 114 128);
+}
+
+.text-green-600 {
+  color: rgb(22 163 74);
+}
+
+.text-indigo-600 {
+  color: rgb(79 70 229);
+}
+
+.text-indigo-500 {
+  color: rgb(99 102 241);
+}
+
+.bg-gray-50 {
+  background-color: rgb(249 250 251);
+}
+
+.bg-white {
+  background-color: rgb(255 255 255);
+}
+
+.bg-yellow-50 {
+  background-color: rgb(254 252 232);
+}
+
+.border {
+  border-width: 1px;
+}
+
+.border-yellow-200 {
+  border-color: rgb(254 240 138);
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.shadow {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.py-12 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}
+
+.mt-12 {
+  margin-top: 3rem;
+}
+
+.max-w-7xl {
+  max-width: 80rem;
+}
+
+.mx-auto {
   margin-left: auto;
-  margin-right: unset;
+  margin-right: auto;
 }
 
-/* RTL-aware text alignment */
-.rtl .text-left {
-  text-align: right;
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
 }
 
-.rtl .text-right {
-  text-align: left;
+.space-y-4 > * + * {
+  margin-top: 1rem;
 }
 
-/* RTL-aware border radius */
-.rtl .rounded-l {
-  border-top-right-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+.space-x-4 > * + * {
+  margin-left: 1rem;
 }
 
-.rtl .rounded-r {
-  border-top-left-radius: 0.25rem;
-  border-bottom-left-radius: 0.25rem;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+.grid {
+  display: grid;
 }
 
-/* Enhanced scrollbar for Arabic content */
-html[lang="ar"] ::-webkit-scrollbar {
-  width: 8px;
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
-html[lang="ar"] ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.gap-6 {
+  gap: 1.5rem;
 }
 
-html[lang="ar"] ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
-}
-
-html[lang="ar"] ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@media (min-width: 768px) {
+  .md\\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+@media (min-width: 1024px) {
+  .lg\\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .sm\\:px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Link styles */
+a {
+  color: rgb(79 70 229);
+  text-decoration: none;
+}
+
+a:hover {
+  color: rgb(99 102 241);
+}
+
+/* Button styles */
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* List styles */
+ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+li {
+  margin-bottom: 0.25rem;
+} 
